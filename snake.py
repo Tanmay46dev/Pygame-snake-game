@@ -4,7 +4,7 @@ from utils import CELL_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
 
 class Snake:
     def __init__(self, start_pos: list):
-        self.parts = [start_pos, [1, 0], [0, 0]]
+        self.parts = [start_pos]
         self.direction_x = 1
         self.direction_y = 0
 
@@ -13,8 +13,28 @@ class Snake:
         head_y = self.parts[0][1]
         return head_x * CELL_SIZE >= SCREEN_WIDTH or head_y * CELL_SIZE >= SCREEN_HEIGHT or head_x * CELL_SIZE < 0 or head_y * CELL_SIZE < 0
 
-    def grow(self):
-        pass
+    def grow(self, food_pos=None):
+        last_part = self.parts[-1]
+        if len(self.parts) > 1:
+            second_last_part = self.parts[-2]
+            if last_part[0] == second_last_part[0]:
+                new_x_pos = last_part[0]
+                new_y_pos = -second_last_part[1]
+                self.parts.append([new_x_pos, new_y_pos])
+            elif last_part[1] == second_last_part[1]:
+                new_x_pos = -second_last_part[0]
+                new_y_pos = last_part[1]
+                self.parts.append([new_x_pos, new_y_pos])
+        else:
+            if self.direction_x == 0:
+                x_pos = self.parts[0][0]
+                y_pos = -self.parts[0][1]
+                self.parts.append([x_pos, y_pos])
+            if self.direction_y == 0:
+                x_pos = -self.parts[0][0]
+                y_pos = self.parts[0][1]
+                self.parts.append([x_pos, y_pos])
+
 
     def draw(self, surface: pygame.Surface):
         for i in range(len(self.parts)):

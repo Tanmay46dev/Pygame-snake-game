@@ -23,6 +23,7 @@ class Game:
 
         # Score
         self.score = 0
+        self.score_font = get_font()
 
     def draw_grid(self):
         # Draw vertical lines
@@ -36,6 +37,9 @@ class Game:
     def manage_eating(self):
         # Check if snake is in the same cell as the food
         if self.snake.parts[0][0] == self.food.left // CELL_SIZE and self.snake.parts[0][1] == self.food.top // CELL_SIZE:
+            # Make the snake grow
+            self.snake.grow()
+
             # Increase score
             self.score += 1
 
@@ -62,7 +66,8 @@ class Game:
 
             self.clock.tick(FPS)
             self.screen.fill("#212121")
-            #self.draw_grid()
+            self.score_font.render(f"{self.score}", True, "white")
+            self.draw_grid()
 
             # Manage the eating mechanism of the snake
             self.manage_eating()
