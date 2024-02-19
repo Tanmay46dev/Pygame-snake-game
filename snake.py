@@ -3,7 +3,7 @@ from utils import CELL_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
 
 
 class Snake:
-    def __init__(self, start_pos: list):
+    def __init__(self, start_pos: list) -> None:
         self.parts = [start_pos]
         self.direction_x = 1
         self.direction_y = 0
@@ -11,9 +11,10 @@ class Snake:
     def is_game_over(self) -> bool:
         head_x = self.parts[0][0]
         head_y = self.parts[0][1]
+
         return head_x * CELL_SIZE >= SCREEN_WIDTH or head_y * CELL_SIZE >= SCREEN_HEIGHT or head_x * CELL_SIZE < 0 or head_y * CELL_SIZE < 0
 
-    def grow(self, food_pos=None):
+    def grow(self):
         last_part = self.parts[-1]
         if len(self.parts) > 1:
             second_last_part = self.parts[-2]
@@ -47,9 +48,6 @@ class Snake:
             pygame.draw.rect(surface, color, pygame.Rect(x_pos * CELL_SIZE, y_pos * CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
     def update(self):
-        if self.is_game_over():
-            print("Game over")
-            return
 
         initial_head_x = self.parts[0][0]
         initial_head_y = self.parts[0][1]
@@ -66,7 +64,7 @@ class Snake:
                 self.parts[i] = temp
                 temp = a
 
-    def move(self, direction_x, direction_y):
+    def move(self, direction_x: int, direction_y: int):
         if len(self.parts) > 1:
             if direction_x == -self.direction_x:
                 return

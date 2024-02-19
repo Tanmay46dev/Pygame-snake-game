@@ -2,7 +2,6 @@ import pygame
 from utils import *
 from snake import Snake
 
-
 class Game:
     def __init__(self):
         # Pygame stuff
@@ -22,8 +21,11 @@ class Game:
         self.food = pygame.Rect(x_pos * CELL_SIZE, y_pos * CELL_SIZE, CELL_SIZE, CELL_SIZE)
 
         # Score
+        self.high_score = get_high_score()
         self.score = 0
-        self.score_font = get_font()
+        self.score_font = get_font(64)
+
+        self.game_over_surface = self.score_font.render("GAME OVER! Press 'R' to restart.", True, "white")
 
     def draw_grid(self):
         # Draw vertical lines
@@ -42,6 +44,8 @@ class Game:
 
             # Increase score
             self.score += 1
+            if self.score > self.high_score:
+                set_high_score(self.score)
 
             # Spawn the food at next random position
             x_pos, y_pos = get_random_food_pos()
@@ -66,19 +70,23 @@ class Game:
 
             self.clock.tick(FPS)
             self.screen.fill("#212121")
-            self.score_font.render(f"{self.score}", True, "white")
-            self.draw_grid()
+            score_surface = self.score_font.render(f"{self.score}", True, "white")
+            self.screen.blit(score_surface, (SCREEN_WIDTH // 2, CELL_SIZE))
+
+
+            # Snake
+            self.snake.draw(self.screen)
+            if self.snake.is_game_over():
+                self.screen.blit(self.game_over_surface, (100, (SCREEN_HEIGHT // 2) - 128))
+            else:
+                self.draw_grid()
+                self.snake.update()
 
             # Manage the eating mechanism of the snake
             self.manage_eating()
 
             # Draw the food
             pygame.draw.rect(self.screen, FOOD_COLOR, self.food)
-
-            # Snake
-            self.snake.draw(self.screen)
-            self.snake.update()
-
             pygame.display.update()
 
 
