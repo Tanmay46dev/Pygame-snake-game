@@ -1,5 +1,5 @@
 import pygame
-from utils import CELL_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT
+from utils import CELL_SIZE, SCREEN_WIDTH, SCREEN_HEIGHT, SNAKE_HEAD_COLOR, SNAKE_BODY_COLOR
 
 
 class Snake:
@@ -21,11 +21,11 @@ class Snake:
             if last_part[0] == second_last_part[0]:
                 new_x_pos = last_part[0]
                 new_y_pos = -second_last_part[1]
-                self.parts.append([new_x_pos, new_y_pos])
+                # self.parts.append([new_x_pos, new_y_pos])
             elif last_part[1] == second_last_part[1]:
                 new_x_pos = -second_last_part[0]
                 new_y_pos = last_part[1]
-                self.parts.append([new_x_pos, new_y_pos])
+            self.parts.append([new_x_pos, new_y_pos])
         else:
             if self.direction_x == 0:
                 x_pos = self.parts[0][0]
@@ -42,9 +42,9 @@ class Snake:
             part = self.parts[i]
             x_pos = part[0]
             y_pos = part[1]
-            color = "blue"
+            color = SNAKE_BODY_COLOR
             if i == 0:
-                color = "yellow"
+                color = SNAKE_HEAD_COLOR
             pygame.draw.rect(surface, color, pygame.Rect(x_pos * CELL_SIZE, y_pos * CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
     def update(self):

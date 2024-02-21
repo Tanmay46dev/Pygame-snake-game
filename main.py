@@ -2,6 +2,7 @@ import pygame
 from utils import *
 from snake import Snake
 
+
 class Game:
     def __init__(self):
         # Pygame stuff
@@ -26,6 +27,7 @@ class Game:
         self.score_font = get_font(64)
 
         self.game_over_surface = self.score_font.render("GAME OVER! Press 'R' to restart.", True, "white")
+        self.game_over = False
 
     def draw_grid(self):
         # Draw vertical lines
@@ -52,6 +54,19 @@ class Game:
             self.food.left = x_pos * CELL_SIZE
             self.food.top = y_pos * CELL_SIZE
 
+    def restart_game(self):
+        self.snake.parts.clear()
+        self.snake.parts.append([0, 0])
+        x_pos, y_pos = get_random_food_pos()
+        self.food.left = x_pos * CELL_SIZE
+        self.food.top = y_pos * CELL_SIZE
+        self.game_over = False
+        self.score = 0
+
+        # Set the game over bool back to false
+        self.game_over = False
+
+
     def run(self):
         running = True
         while running:
@@ -67,16 +82,19 @@ class Game:
                         self.snake.move(-1, 0)
                     if event.key == pygame.K_RIGHT:
                         self.snake.move(1, 0)
+                    if self.game_over:
+                        if event.key == pygame.K_r:
+                            self.restart_game()
 
             self.clock.tick(FPS)
             self.screen.fill("#212121")
             score_surface = self.score_font.render(f"{self.score}", True, "white")
             self.screen.blit(score_surface, (SCREEN_WIDTH // 2, CELL_SIZE))
 
-
             # Snake
             self.snake.draw(self.screen)
-            if self.snake.is_game_over():
+            self.game_over = self.snake.is_game_over()
+            if self.game_over:
                 self.screen.blit(self.game_over_surface, (100, (SCREEN_HEIGHT // 2) - 128))
             else:
                 self.draw_grid()
